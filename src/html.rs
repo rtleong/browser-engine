@@ -116,3 +116,20 @@ impl Parser {
             }
             result
         }
+
+            /// Return the current character, and advance self.pos to the next character.
+    fn consume_char(&mut self) -> char {
+        let c = self.next_char();
+        self.pos += c.len_utf8();
+        c
+    }
+
+    /// Read the current character without consuming it.
+    fn next_char(&self) -> char {
+        self.input[self.pos..].chars().next().unwrap()
+    }
+
+    /// Does the current input start with the given string?
+    fn starts_with(&self, s: &str) -> bool {
+        self.input[self.pos ..].starts_with(s)
+    }
