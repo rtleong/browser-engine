@@ -236,3 +236,40 @@ impl LayoutBox<'_> {
         d.content.y = containing_block.content.height + containing_block.content.y +
                       d.margin.top + d.border.top + d.padding.top;
     }
+
+        /// Lay out the block's children within its content area.
+    ///
+    /// Sets `self.dimensions.height` to the total content height.
+    fn layout_block_children(&mut self) {
+        for child in &mut self.children {
+            child.layout(self.dimensions);
+            // Increment the height so each child is laid out below the previous one.
+            self.dimensions.content.height += child.dimensions.margin_box().height;
+        }
+    }
+
+    /// Height of a block-level non-replaced element in normal flow with overflow visible.
+    fn calculate_block_height(&mut self) {
+        // If the height is set to an explicit length, use that exact length.
+        // Otherwise, just keep the value set by `layout_block_children`.
+        if let Some(Length(h, Px)) = self.get_style_node().value("height") {
+            self.dimensions.content.height = h;
+        }
+    }
+
+    /// Where a new inline child should go.
+    fn get_inline_container(&mut self) -> &mut Self {
+        match self.box_type {
+            InlineNode(_) | AnonymousBlock => self,
+            BlockNode(_) => {
+                // If we've just generated an anonymous block box, keep using it.
+                // Otherwise, create a new one.
+                match self.children.last() {
+                    Some(&LayoutBox { box_type: AnonymousBlock,..}) => {}
+                    _ => self.children.push(LayoutBox::new(AnonymousBlock))
+                }
+                self.children.last_mut().unwrap()
+            }
+        }
+    }
+}
