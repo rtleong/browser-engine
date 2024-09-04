@@ -133,3 +133,19 @@ impl Parser {
     fn starts_with(&self, s: &str) -> bool {
         self.input[self.pos ..].starts_with(s)
     }
+
+        /// If the exact string `s` is found at the current position, consume it.
+    /// Otherwise, panic.
+    fn expect(&mut self, s: &str) {
+        if self.starts_with(s) {
+            self.pos += s.len();
+        } else {
+            panic!("Expected {:?} at byte {} but it was not found", s, self.pos);
+        }
+    }
+
+    /// Return true if all input is consumed.
+    fn eof(&self) -> bool {
+        self.pos >= self.input.len()
+    }
+}
