@@ -99,3 +99,23 @@ fn matches(elem: &ElementData, selector: &Selector) -> bool {
         Selector::Simple(s) => matches_simple_selector(elem, s)
     }
 }
+
+fn matches_simple_selector(elem: &ElementData, selector: &SimpleSelector) -> bool {
+    // Check type selector
+    if selector.tag_name.iter().any(|name| elem.tag_name != *name) {
+        return false;
+    }
+
+    // Check ID selector
+    if selector.id.iter().any(|id| elem.id() != Some(id)) {
+        return false;
+    }
+
+    // Check class selectors
+    if selector.class.iter().any(|class| !elem.classes().contains(class.as_str())) {
+        return false;
+    }
+
+    // We didn't find any non-matching selector components.
+    true
+}
