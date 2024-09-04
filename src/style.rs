@@ -92,3 +92,10 @@ fn match_rule<'a>(elem: &ElementData, rule: &'a Rule) -> Option<MatchedRule<'a>>
         .iter().find(|selector| matches(elem, selector))
         .map(|selector| (selector.specificity(), rule))
 }
+
+/// Selector matching:
+fn matches(elem: &ElementData, selector: &Selector) -> bool {
+    match selector {
+        Selector::Simple(s) => matches_simple_selector(elem, s)
+    }
+}
