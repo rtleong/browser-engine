@@ -48,3 +48,27 @@ pub struct Color {
     pub b: u8,
     pub a: u8,
 }
+
+impl Copy for Color {}
+
+pub type Specificity = (usize, usize, usize);
+
+impl Selector {
+    pub fn specificity(&self) -> Specificity {
+        let Selector::Simple(ref simple) = *self;
+        let a = simple.id.iter().count();
+        let b = simple.class.len();
+        let c = simple.tag_name.iter().count();
+        (a, b, c)
+    }
+}
+
+impl Value {
+    /// Return the size of a length in px, or zero for non-lengths.
+    pub fn to_px(&self) -> f32 {
+        match *self {
+            Value::Length(f, Unit::Px) => f,
+            _ => 0.0
+        }
+    }
+}
