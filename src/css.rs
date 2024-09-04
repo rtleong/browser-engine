@@ -260,3 +260,8 @@ impl Parser {
         self.pos >= self.input.len()
     }
 }
+
+fn valid_identifier_char(c: char) -> bool {
+    // TODO: Include U+00A0 and higher.
+    matches!(c, 'a'..='z' | 'A'..='Z' | '0'..='9' | '-' | '_')
+}
