@@ -102,3 +102,17 @@ impl Parser {
     fn parse_text(&mut self) -> dom::Node {
         dom::text(self.consume_while(|c| c != '<'))
     }
+
+        /// Consume and discard zero or more whitespace characters.
+        fn consume_whitespace(&mut self) {
+            self.consume_while(char::is_whitespace);
+        }
+    
+        /// Consume characters until `test` returns false.
+        fn consume_while(&mut self, test: impl Fn(char) -> bool) -> String {
+            let mut result = String::new();
+            while !self.eof() && test(self.next_char()) {
+                result.push(self.consume_char());
+            }
+            result
+        }
