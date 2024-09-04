@@ -273,3 +273,33 @@ impl LayoutBox<'_> {
         }
     }
 }
+
+impl Rect {
+    pub fn expanded_by(self, edge: EdgeSizes) -> Rect {
+        Rect {
+            x: self.x - edge.left,
+            y: self.y - edge.top,
+            width: self.width + edge.left + edge.right,
+            height: self.height + edge.top + edge.bottom,
+        }
+    }
+}
+
+impl Dimensions {
+    /// The area covered by the content area plus its padding.
+    pub fn padding_box(self) -> Rect {
+        self.content.expanded_by(self.padding)
+    }
+    /// The area covered by the content area plus padding and borders.
+    pub fn border_box(self) -> Rect {
+        self.padding_box().expanded_by(self.border)
+    }
+    /// The area covered by the content area plus padding, borders, and margin.
+    pub fn margin_box(self) -> Rect {
+        self.border_box().expanded_by(self.margin)
+    }
+}
+
+fn sum<I>(iter: I) -> f32 where I: Iterator<Item=f32> {
+    iter.fold(0., |a, b| a + b)
+}
