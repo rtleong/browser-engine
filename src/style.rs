@@ -59,3 +59,20 @@ pub fn style_tree<'a>(root: &'a Node, stylesheet: &'a Stylesheet) -> StyledNode<
         children: root.children.iter().map(|child| style_tree(child, stylesheet)).collect(),
     }
 }
+
+/// Apply styles to a single element, returning the specified styles.
+///
+/// To do: Allow multiple UA/author/user stylesheets, and implement the cascade.
+fn specified_values(elem: &ElementData, stylesheet: &Stylesheet) -> PropertyMap {
+    let mut values = HashMap::new();
+    let mut rules = matching_rules(elem, stylesheet);
+
+    // Go through the rules from lowest to highest specificity.
+    rules.sort_by(|&(a, _), &(b, _)| a.cmp(&b));
+    for (_, rule) in rules {
+        for declaration in &rule.declarations {
+            values.insert(declaration.name.clone(), declaration.value.clone());
+        }
+    }
+    values
+}
