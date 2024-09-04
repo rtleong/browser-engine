@@ -1,0 +1,13 @@
+[package]
+name = "cearch"
+version = "0.0.1"
+authors = ["Riley Leong <rileyleong24@g.ucla.edu>"]
+edition = "2024"
+
+[[bin]]
+name = "cearch"
+path = "src/main.rs"
+
+[dependencies]
+getopts = "0.2.21"
+image = { version = "0.25", default-features = false, features = ["png"] }
