@@ -44,3 +44,18 @@ impl<'a> StyledNode<'a> {
         }
     }
 }
+
+/// Apply a stylesheet to an entire DOM tree, returning a StyledNode tree.
+///
+/// This finds only the specified values at the moment. Eventually it should be extended to find the
+/// computed values too, including inherited values.
+pub fn style_tree<'a>(root: &'a Node, stylesheet: &'a Stylesheet) -> StyledNode<'a> {
+    StyledNode {
+        node: root,
+        specified_values: match root.node_type {
+            NodeType::Element(ref elem) => specified_values(elem, stylesheet),
+            NodeType::Text(_) => HashMap::new()
+        },
+        children: root.children.iter().map(|child| style_tree(child, stylesheet)).collect(),
+    }
+}
