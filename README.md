@@ -1,7 +1,7 @@
 cearch
 ========
 
-A web rendering engine written in the Rust language, by Riley Leong
+A Rust web rendering engine by Riley Leong
 (rileyleong24@g.ucla.edu).
 
 Currently implemented:
