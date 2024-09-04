@@ -73,3 +73,23 @@ pub fn layout_tree<'a>(node: &'a StyledNode<'a>, mut containing_block: Dimension
     root_box.layout(containing_block);
     root_box
 }
+
+/// Build the tree of LayoutBoxes, but don't perform any layout calculations yet.
+fn build_layout_tree<'a>(style_node: &'a StyledNode<'a>) -> LayoutBox<'a> {
+    // Create the root box.
+    let mut root = LayoutBox::new(match style_node.display() {
+        Display::Block => BlockNode(style_node),
+        Display::Inline => InlineNode(style_node),
+        Display::None => panic!("Root node has display: none.")
+    });
+
+    // Create the descendant boxes.
+    for child in &style_node.children {
+        match child.display() {
+            Display::Block => root.children.push(build_layout_tree(child)),
+            Display::Inline => root.get_inline_container().children.push(build_layout_tree(child)),
+            Display::None => {} // Don't lay out nodes with `display: none;`
+        }
+    }
+    root
+}
