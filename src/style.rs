@@ -76,3 +76,19 @@ fn specified_values(elem: &ElementData, stylesheet: &Stylesheet) -> PropertyMap 
     }
     values
 }
+
+/// A single CSS rule and the specificity of its most specific matching selector.
+type MatchedRule<'a> = (Specificity, &'a Rule);
+
+/// Find all CSS rules that match the given element.
+fn matching_rules<'a>(elem: &ElementData, stylesheet: &'a Stylesheet) -> Vec<MatchedRule<'a>> {
+    stylesheet.rules.iter().filter_map(|rule| match_rule(elem, rule)).collect()
+}
+
+/// If `rule` matches `elem`, return a `MatchedRule`. Otherwise return `None`.
+fn match_rule<'a>(elem: &ElementData, rule: &'a Rule) -> Option<MatchedRule<'a>> {
+    // Find the first (most specific) matching selector.
+    rule.selectors
+        .iter().find(|selector| matches(elem, selector))
+        .map(|selector| (selector.specificity(), rule))
+}
