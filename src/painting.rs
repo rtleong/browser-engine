@@ -85,3 +85,45 @@ fn render_borders(list: &mut DisplayList, layout_box: &LayoutBox) {
         height: d.border.bottom,
     }));
 }
+
+/// Return the specified color for CSS property `name`, or None if no color was specified.
+fn get_color(layout_box: &LayoutBox, name: &str) -> Option<Color> {
+    match layout_box.box_type {
+        BlockNode(style) | InlineNode(style) => match style.value(name) {
+            Some(Value::ColorValue(color)) => Some(color),
+            _ => None
+        },
+        AnonymousBlock => None
+    }
+}
+
+impl Canvas {
+    /// Create a blank canvas
+    fn new(width: usize, height: usize) -> Canvas {
+        let white = Color { r: 255, g: 255, b: 255, a: 255 };
+        Canvas {
+            pixels: vec![white; width * height],
+            width,
+            height,
+        }
+    }
+
+    fn paint_item(&mut self, item: &DisplayCommand) {
+        match *item {
+            DisplayCommand::SolidColor(color, rect) => {
+                // Clip the rectangle to the canvas boundaries.
+                let x0 = rect.x.clamp(0.0, self.width as f32) as usize;
+                let y0 = rect.y.clamp(0.0, self.height as f32) as usize;
+                let x1 = (rect.x + rect.width).clamp(0.0, self.width as f32) as usize;
+                let y1 = (rect.y + rect.height).clamp(0.0, self.height as f32) as usize;
+
+                for y in y0 .. y1 {
+                    for x in x0 .. x1 {
+                        // TODO: alpha compositing with existing pixel
+                        self.pixels[y * self.width + x] = color;
+                    }
+                }
+            }
+        }
+    }
+}
