@@ -23,3 +23,17 @@ pub enum DisplayCommand {
 }
 
 pub type DisplayList = Vec<DisplayCommand>;
+
+pub fn build_display_list(layout_root: &LayoutBox) -> DisplayList {
+    let mut list = Vec::new();
+    render_layout_box(&mut list, layout_root);
+    list
+}
+
+fn render_layout_box(list: &mut DisplayList, layout_box: &LayoutBox) {
+    render_background(list, layout_box);
+    render_borders(list, layout_box);
+    for child in &layout_box.children {
+        render_layout_box(list, child);
+    }
+}
