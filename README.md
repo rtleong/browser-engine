@@ -1,4 +1,4 @@
-cearch
+Rusty Renderer
 ========
 
 A Rust web rendering engine by Riley Leong
@@ -16,18 +16,18 @@ Instructions
 
 1. [Install Rust 1.0 beta or newer.](http://www.rust-lang.org/install.html)
 
-2. Clone the cearch source code from https://github.com/rtleong/browser-engine
+2. Clone the Rusty Renderer source code from https://github.com/rtleong/browser-engine
 
-3. Run `cargo build` to build cearch, and `cargo run` to run it.
+3. Run `cargo build` to build Rusty Renderer, and `cargo run` to run it.
 
 To build and run with optimizations enabled, use `cargo build --release` and
 `cargo run --release`.
 
-By default, cearch will load test.html and test.css from the `examples`
+By default, Rusty Renderer will load test.html and test.css from the `examples`
 directory.  You can use the `--html` and `--css` arguments to the cearch
 executable to change the input files:
 
-    ./target/debug/cearch --html examples/test.html --css examples/test.css
+    ./target/debug/browser-engine --html examples/test.html --css examples/test.css
 
 The rendered page will be saved to a file named `output.png`.  To change the
 output filename, use the `-o` option.  To switch to PDF output, use add
